@@ -1,5 +1,5 @@
 EXEC := java -jar
-TARGET := target/jnettle-1.0.jar
+TARGET := target/jera-1.0.jar
 
 build:
 	mvn clean install
