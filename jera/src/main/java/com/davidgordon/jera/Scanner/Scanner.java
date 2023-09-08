@@ -26,7 +26,7 @@ public class Scanner {
       scanToken();
     }
 
-    tokens.add(new Token(EOF, "", null, line));
+    tokens.add(new Token(TokenType.EOF, "", null, line));
     return tokens;
   }
 
@@ -35,7 +35,7 @@ public class Scanner {
   }
 
   private void scanToken() {
-    char c = nextChar();
+    char c = advance();
 
     switch(c) {
       case '(': addToken(TokenType.LEFT_PAREN); break;
@@ -50,7 +50,7 @@ public class Scanner {
       case '*': addToken(TokenType.MULTIPLY); break;
       case '/': addToken(TokenType.DIVIDE); break;
       case '#': 
-        while(peek() != '\n' && !isAtEnd()) nextChar();
+        while(peek() != '\n' && !isAtEnd()) advance();
         break;
       case '!':
         addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
@@ -69,9 +69,11 @@ public class Scanner {
       case '\t':
         // Ignore whitespace.
         break;
-
       case '\n':
         line++;
+        break;
+      case '"':
+        string();
         break;
       default: 
         Main.error(line, "Unexpected character.");
@@ -79,7 +81,7 @@ public class Scanner {
     }
   }
 
-  private char nextChar() {
+  private char advance() {
     return source.charAt(current++);
   }
 
@@ -103,5 +105,24 @@ public class Scanner {
 
     current++;
     return true;
+  }
+
+  private void string() {
+    while(peek() != '"' && !isAtEnd()) {
+      if(peek() == '\n') line++;
+      advance();
+    }
+
+    if(isAtEnd()) {
+      Main.error(line, "Unterminated string");
+      return;
+    }
+
+    // Consume closing "
+    advance();
+
+    // Trim the surrounding quotes.
+    String value = source.substring(start + 1, current - 1);
+    addToken(TokenType.STRING, value);
   }
 }
