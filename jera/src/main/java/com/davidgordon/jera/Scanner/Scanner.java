@@ -75,9 +75,14 @@ public class Scanner {
       case '"':
         string();
         break;
-      default: 
-        Main.error(line, "Unexpected character.");
-        break;
+      default:
+        if(isDigit(c)) {
+          number();
+        }
+        else {
+          Main.error(line, "Unexpected character.");
+          break;
+        }
     }
   }
 
@@ -107,6 +112,10 @@ public class Scanner {
     return true;
   }
 
+  private boolean isDigit(char c) {
+    return c >= '0' && c <= '9';
+  }
+
   private void string() {
     while(peek() != '"' && !isAtEnd()) {
       if(peek() == '\n') line++;
@@ -118,11 +127,30 @@ public class Scanner {
       return;
     }
 
-    // Consume closing "
+    // Consume closing ".
     advance();
 
     // Trim the surrounding quotes.
     String value = source.substring(start + 1, current - 1);
     addToken(TokenType.STRING, value);
+  }
+
+  private void number() {
+    while(isDigit(peek())) advance();
+
+    // Look for a fractional part.
+    if(peek() == '.' && isDigit(peekNext())) {
+      // Consume the "."
+      advance();
+
+      while(isDigit(peek())) advance();
+    }
+
+    addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+  }
+
+  private char peekNext() {
+    if(current + 1 >= source.length()) return '\0';
+    return source.charAt(current + 1);
   }
 }
