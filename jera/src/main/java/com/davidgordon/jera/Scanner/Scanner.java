@@ -83,7 +83,7 @@ public class Scanner {
           identifier();
         }
         else {
-          Main.error(line, "Unexpected character.");
+          Main.error(line, "Unexpected character");
           break;
         }
     }
