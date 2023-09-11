@@ -79,8 +79,11 @@ public class Scanner {
         if(isDigit(c)) {
           number();
         }
+        else if(isAlpha(c)) {
+          identifier();
+        }
         else {
-          Main.error(line, "Unexpected character.");
+          Main.error(line, "Unexpected character");
           break;
         }
     }
@@ -116,6 +119,16 @@ public class Scanner {
     return c >= '0' && c <= '9';
   }
 
+  private boolean isAlpha(char c) {
+    return (c >= 'a' && c <= 'z') ||
+      (c >= 'A' && c <= 'Z') ||
+      c == '_';
+  }
+
+  private boolean isAlphaNumeric(char c) {
+    return isAlpha(c) || isDigit(c);
+  }
+
   private void string() {
     while(peek() != '"' && !isAtEnd()) {
       if(peek() == '\n') line++;
@@ -147,6 +160,15 @@ public class Scanner {
     }
 
     addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+  }
+
+  public void identifier() {
+    while (isAlphaNumeric(peek())) advance();
+
+    String text = source.substring(start, current);
+    TokenType type = Token.keywords.get(text);
+    if (type == null) type = TokenType.IDENTIFIER;
+    addToken(type);
   }
 
   private char peekNext() {

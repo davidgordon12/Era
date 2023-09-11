@@ -61,6 +61,6 @@ public class Main {
   }
 
   private static void report(int line, String where, String message) {
-    System.err.println("Error" + where + ":" +  message + "on line " + line);
+    System.err.println("Error" + where + ": " +  message + " on line " + line);
   }
 }
