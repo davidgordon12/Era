@@ -1,7 +1,5 @@
 # Era
-Era is a personal, for fun and educational, interpreted language implemented in both Java and C.
-
-Era is first transpiled into an intermediate language. The following IR is then run in our own virtual-machine.
+A REPL implemented in Java for the Lox programming language 
 
 ## Resources
 <a href="https://craftinginterpreters.com/">Crafting Interpreters</a> - Robert Nystrom
